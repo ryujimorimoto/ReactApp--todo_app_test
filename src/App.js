@@ -1,20 +1,37 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import ReactDOM from "react-dom";
 import { div } from 'prelude-ls';
 import TodoList from "./components/TodoList";
 import useTodo from "./hooks/useTodo";
 import TodoForm from "./components/TodoForm";
+import TodoFilter from "./components/TodoFilter";
 
 function App() {
   const { todos, toggleTodo, deleteTodo, addTodo } = useTodo();
+  const [filter, setFilter] = useState("all");
+  const handleFilter = event => {
+    setFilter(event.target.value);
+  }
+  const filteredTodos = useMemo(() => {
+    switch (filter) {
+      case "active":
+        return todos.filter(todo => !todo.completed);
+      case "completed":
+        return todos.filter(todo => todo.completed);
+      case "all":
+      default:
+        return todos;
+    }
+  }, [todos, filter])
   return (
     <div>
       <h1>Todo List</h1>
+      <TodoFilter selectedFilter={filter} handleFilter={handleFilter} />
       <TodoForm addTodo={addTodo} />
-      <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo}/>
+      <TodoList todos={filteredTodos} toggleTodo={toggleTodo} deleteTodo={deleteTodo}/>
     </div>
   );
 }

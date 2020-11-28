@@ -14,7 +14,6 @@ function TodoForm({ addTodo }) {
       <input 
         value={value}
         onChange={event => setValue(event.target.value)}
-      
       />
       <button type="submit">追加</button>
     </form>
